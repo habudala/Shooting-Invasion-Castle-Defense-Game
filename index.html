@@ -4,59 +4,89 @@
 	<title>Shooting Game</title>
 	<style>
 		#canvas { border:1px solid grey; }
+		#container {margin:auto;
+					text-align:center;}
+
+		#buttons {margin:auto;
+				  text-align:center;}
+		#leftBtn {padding:10px;
+				  font-size:15px;}
+		#rightBtn {padding:10px;
+				  font-size:15px;}
+		#fire {padding:10px;
+				  font-size:15px;}
 	</style>
 	<script>
-		
+
+		var hero = new Image();
+		hero.src = "images/heroShip.png";
+		var enemy = new Image();
+		enemy.src = "images/enemyShip.png";
+		var bg = new Image();
+		bg.src = "images/bg.jpg";
+
 		function initCanvas() {
 			var context = document.getElementById("canvas").getContext("2d");
 			var cW = context.canvas.width;
 			var cH = context.canvas.height;
 			var enemies = [
-							{"id":"enemy1","x":1020,"y":75,"w":40,"h":20},
-							{"id":"enemy2","x":1020,"y":150,"w":40,"h":20},
-							{"id":"enemy3","x":1020,"y":225,"w":40,"h":20},
-							{"id":"enemy4","x":1120,"y":75,"w":40,"h":20},
-							{"id":"enemy5","x":1120,"y":150,"w":40,"h":20},
-							{"id":"enemy6","x":1120,"y":225,"w":40,"h":20},
-							{"id":"enemy7","x":1220,"y":75,"w":40,"h":20},
-							{"id":"enemy8","x":1220,"y":150,"w":40,"h":20},
-							{"id":"enemy9","x":1220,"y":225,"w":40,"h":20},
+							{"id":"enemy1","x":1020,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy1","x":1020,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy2","x":1020,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy3","x":1020,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enemy4","x":1120,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy5","x":1120,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy6","x":1120,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enemy7","x":1220,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy8","x":1220,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy9","x":1220,"y":225,"w":50,"h":30,"clipY":0},
 
-							{"id":"enemy1","x":1620,"y":75,"w":40,"h":20},
-							{"id":"enemy2","x":1620,"y":150,"w":40,"h":20},
-							{"id":"enemy3","x":1620,"y":225,"w":40,"h":20},
-							{"id":"enemy4","x":1720,"y":75,"w":40,"h":20},
-							{"id":"enemy5","x":1720,"y":150,"w":40,"h":20},
-							{"id":"enemy6","x":1720,"y":225,"w":40,"h":20},
-							{"id":"enemy7","x":1820,"y":75,"w":40,"h":20},
-							{"id":"enemy8","x":1820,"y":150,"w":40,"h":20},
-							{"id":"enemy9","x":1820,"y":225,"w":40,"h":20},
+							{"id":"enemy10","x":1620,"y":75,"w":50,"h":30},
+							{"id":"enemy11","x":1620,"y":150,"w":50,"h":30},
+							{"id":"enemy12","x":1620,"y":225,"w":50,"h":30},
+							{"id":"enemy13","x":1720,"y":75,"w":50,"h":30},
+							{"id":"enemy14","x":1720,"y":150,"w":50,"h":30},
+							{"id":"enemy15","x":1720,"y":225,"w":50,"h":30},
+							{"id":"enemy16","x":1820,"y":75,"w":50,"h":30},
+							{"id":"enemy17","x":1820,"y":150,"w":50,"h":30},
+							{"id":"enemy18","x":1820,"y":225,"w":50,"h":30},
 
-							{"id":"enemy1","x":2220,"y":75,"w":40,"h":20},
-							{"id":"enemy2","x":2320,"y":150,"w":40,"h":20},
-							{"id":"enemy3","x":2420,"y":225,"w":40,"h":20},
-							{"id":"enemy4","x":2220,"y":75,"w":40,"h":20},
-							{"id":"enemy5","x":2320,"y":150,"w":40,"h":20},
-							{"id":"enemy6","x":2420,"y":225,"w":40,"h":20},
-							{"id":"enemy7","x":2220,"y":75,"w":40,"h":20},
-							{"id":"enemy8","x":2320,"y":150,"w":40,"h":20},
-							{"id":"enemy9","x":2420,"y":225,"w":40,"h":20},
+							{"id":"enemy19","x":2220,"y":75,"w":40,"h":20},
+							{"id":"enemy20","x":2320,"y":150,"w":40,"h":20},
+							{"id":"enemy21","x":2420,"y":225,"w":40,"h":20},
+							{"id":"enemy22","x":2420,"y":75,"w":40,"h":20},
+							{"id":"enemy23","x":2320,"y":150,"w":40,"h":20},
+							{"id":"enemy24","x":2420,"y":225,"w":40,"h":20},
+							{"id":"enemy25","x":2420,"y":75,"w":40,"h":20},
+							{"id":"enemy26","x":2320,"y":150,"w":40,"h":20},
+							{"id":"enemy27","x":2420,"y":225,"w":40,"h":20},
 							];
 
 
 			function renderEnemies () {
 				for (var i = 0; i < enemies.length; i++) {
-					context.fillStyle = "blue";
-					context.fillRect(enemies[i].x -= 0.5, enemies[i].y, enemies[i].w, enemies[i].h);
+					//context.fillStyle = "blue";
+					//context.fillRect(enemies[i].x -= 0.5, enemies[i].y, enemies[i].w, enemies[i].h);
+					context.drawImage(enemy,0,enemies[i].clipY,64,29,enemies[i].x -= 0.5,enemies[i].y,enemies[i].w,enemies[i].h);
+					if(enemies[i].clipY < 87) {
+						enemies[i].clipY += 29;  console.log("I run too");
+					}else{enemies[i].clipY = 0; 
+						  }
 				}
 			}
 
 
+			function drawBg(){
+				context.drawImage(bg,0,0,cW,cH);console.log("hey, and me?");
+			}
+
+
 			function Launcher () {
-				this.y = 280;
+				this.y = 450;
 				this.x = cW * 0.5 -25;
-				this.w = 50;
-				this.h = 50;
+				this.w = 65;
+				this.h = 100;
+				this.clipX = 0;
 				this.dir;
 				this.bg = "orange";
 				this.missiles = [];
@@ -66,8 +96,14 @@
 					}else if (this.dir == "right") {
 						this.x += 5;
 					}
-					context.fillStyle =this.bg;
-					context.fillRect(this.x,this.y,this.w,this.h);
+					//context.fillStyle =this.bg;
+					//context.fillRect(this.x,this.y,this.w,this.h);
+					context.drawImage(hero,this.clipX,0,29,64,this.x,this.y,this.w,this.h);
+					if(this.clipX < 87) {
+						this.clipX += 29;  console.log("I run");
+					}else{this.clipX = 29; 
+						  }
+					
 					for (var i = 0; i < this.missiles.length; i++) {
 						var miss = this.missiles[i];
 						context.fillStyle = miss.bg;
@@ -81,7 +117,7 @@
 						clearInterval(animate);
 						context.fillStyle = "orange";
 						context.font ="italic bold 36px Arial, sans-serif";
-						context.fillText("Level Complete",cW * 0.5 -130, 50,300);
+						context.fillText("The skies are clear thanks to you..You are a hero!",cW * 0.5 -130, 50,300);
 					}
 				}
 				this.hitDetect = function (m,mi) {
@@ -101,12 +137,13 @@
 			function animate () {
 				//context.save();
 				context.clearRect(0,0,cW,cH);
+				drawBg();
 				launcher.render();
 				renderEnemies();
 				//context.restore();
 			}
 
-			var timer = setInterval(animate,30);
+			var timer = setInterval(animate,60);
 
 			var leftBtn = document.getElementById("leftBtn");
 			var rightBtn = document.getElementById("rightBtn");
@@ -139,11 +176,14 @@
 	</script>
 </head>
 <body>
-	<canvas id="canvas" width="1000px" height="450px"></canvas>
-	<div>
-		<button id="leftBtn">Move left</button>
-		<button id="rightBtn">Move right</button>
+	<div id="container">
+	<canvas id="canvas" width="1000px" height="550px"></canvas>
+	</div>
+	<div id="buttons">
+		<button id="leftBtn">&#8592;</button>
 		<button id="fire">Fire</button>
+		<button id="rightBtn">&#8594;</button>
+		
 	</div>
 	<h3 id="status"></h3>
 </body>
