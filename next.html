@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Shooting Game</title>
+	<style>
+
+		* {margin:0px 0px 0px 0px;
+				padding:0px 0px 0px 0px;}
+		#canvas { border:5px outset grey; }
+		#container {margin:auto;
+					text-align:center;}
+
+		#buttons {margin:auto;
+				  text-align:center;}
+		#leftBtn {padding:10px;
+				  font-size:15px;}
+		#rightBtn {padding:10px;
+				  font-size:15px;}
+		#fire {padding:10px;
+				  font-size:15px;}
+
+		h3 {text-align:center; font-size:30px; margin-top:25px;}
+
+		#footer {width:100vw;
+				margin:50px 0px 0px 0px;
+				padding:0px 0px 0px 0px;
+				/*height:10vh;*/
+				background-color:rgba(102, 204, 255,0.75);
+				text-align:center;}
+
+		#footer>div {text-align:center; margin:auto; width:43px;height:43px;
+					padding-top:15px;}
+
+
+		@keyframes example {
+				    from   {transform:rotateZ(1deg);}
+				 /*   25%  {transform:rotateZ(10deg);}
+				    50%  {transform:rotateZ(10deg);}*/
+				    to {transform:rotateZ(360deg);}
+				}
+
+				/* The element to apply the animation to */
+				#two {
+				    
+				    animation: example 0.1s linear infinite;
+				    
+				    width:42px;
+				    height:42px;
+				    position:absolute;
+				    margin:auto;
+
+				}
+
+				#two>img {width:42px;
+				    height:42px;
+				    
+				}
+
+		#footer>p {font-size:14px;color:white; margin-top:7px; padding-bottom:5px; }
+	</style>
+	<script>
+
+	if (typeof(Storage) !== "undefined") {
+    	if(localStorage.playerId == 0){
+
+		var hero = new Image();
+		hero.src = "images/alexis.png";
+    	}else {
+    		var hero = new Image();
+		hero.src = "images/george.png";
+    	}
+	} else {
+    // Sorry! No Web Storage support..
+	}
+
+		//var hero = new Image();
+		//hero.src = "images/heroShip.png";
+		var enemy = new Image();
+		enemy.src = "images/enemyShip.png";
+		var bg = new Image();
+		bg.src = "images/bg.jpg";
+
+		
+   				
+ 		function sound(src) {
+ 		 	this.sound = document.createElement("audio");
+ 		 	this.sound.src = "soundeff/laser.mp3";
+ 		 	this.sound.setAttribute("preload","auto");
+ 		 	this.sound.setAttribute("controls","none");
+ 		 	this.sound.style.display = "none";
+ 		 	//document.body.appendChild(this.sound);
+ 		 	this.play = function() {
+ 		 		this.sound.play();
+ 		 	}
+
+ 		}
+
+ 		var laserMP3 = new sound("soundeff/laser.mp3");
+
+
+		function initCanvas() {
+			var context = document.getElementById("canvas").getContext("2d");
+			var cW = context.canvas.width;
+			var cH = context.canvas.height;
+			var enemies = [
+							{"id":"enemy-1","x":1020,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-2","x":1020,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-3","x":1020,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-4","x":1120,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-5","x":1120,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-6","x":1120,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-7","x":1220,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-8","x":1220,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-9","x":1220,"y":150,"w":50,"h":30,"clipY":0},
+
+							{"id":"enemy-10","x":1620,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-11","x":1620,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-12","x":1620,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-13","x":1720,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-14","x":1720,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-15","x":1720,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-16","x":1820,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-17","x":1820,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-18","x":1820,"y":225,"w":50,"h":30,"clipY":0},
+
+							{"id":"enemy-19","x":2220,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-20","x":2220,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-21","x":2220,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enem-22","x":2320,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-23","x":2320,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-24","x":2320,"y":225,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-25","x":2420,"y":75,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-26","x":2420,"y":150,"w":50,"h":30,"clipY":0},
+							{"id":"enemy-27","x":2420,"y":225,"w":50,"h":30,"clipY":0},
+							];
+
+
+			function renderEnemies () {
+				for (var i = 0; i < enemies.length; i++) {
+					//context.fillStyle = "blue";
+					//context.fillRect(enemies[i].x -= 0.5, enemies[i].y, enemies[i].w, enemies[i].h);
+					context.drawImage(enemy,0,enemies[i].clipY,64,29,enemies[i].x -= 0.5,enemies[i].y,enemies[i].w,enemies[i].h);
+					if(enemies[i].clipY < 87) {
+						enemies[i].clipY += 29;  console.log("I run too");
+					}else{enemies[i].clipY = 0; 
+						  }
+				}
+			}
+
+
+			function drawBg(){
+				context.drawImage(bg,0,0,cW,cH);console.log("hey, and me?");
+			}
+
+
+			function Launcher () {
+				this.y = 450;
+				this.x = cW * 0.5 -25;
+				this.w = 75;
+				this.h = 120;
+				this.clipX = 0;
+				this.dir;
+				this.bg = "orange";
+				this.missiles = [];
+				this.render = function () {
+					if (this.dir == "left") {
+						this.x -= 7;
+					}else if (this.dir == "right") {
+						this.x += 7;
+					}
+					//context.fillStyle =this.bg;
+					//context.fillRect(this.x,this.y,this.w,this.h);
+					context.drawImage(hero,this.clipX,0,58,128,this.x,this.y,this.w,this.h);
+					if(this.clipX < 174) { //////IMPORTANT WHEN ANIMATING!!!!!!!!/////
+						this.clipX += 58;  console.log("I run");
+					}else{this.clipX = 0; 
+						  }
+					
+					for (var i = 0; i < this.missiles.length; i++) {
+						var miss = this.missiles[i];
+						context.fillStyle = miss.bg;
+						context.fillRect(miss.x, miss.y -= 5,miss.w,miss.h);
+						this.hitDetect(this.missiles[i],i);
+						if(miss.y <= 0) {
+							this.missiles.splice(i,1);
+						}
+					}
+					if (enemies.length == 0) {
+						clearInterval(animate);
+						context.fillStyle = "orange";
+						context.font ="italic bold 36px Arial, sans-serif";
+						context.fillText("The skies are clear thanks to you..You are a hero!",cW * 0.5 -130, 50,300);
+					}
+				}
+				this.hitDetect = function (m,mi) {
+					for (var i =0; i < enemies.length; i++) {
+						var e = enemies[i];
+						if(m.x + m.w >= e.x && m.x <= e.x + e.w && m.y >= e.y && m.y <= e.y + e.h) {
+							this.missiles.splice(this.missiles[mi],1);
+							enemies.splice(i,1);
+							document.getElementById("status").innerHTML = "You destroyed " + e.id;
+						}
+					}
+				}
+			}
+
+			var launcher = new Launcher();
+
+			function animate () {
+				//context.save();
+				context.clearRect(0,0,cW,cH);
+				drawBg();
+				launcher.render();
+				renderEnemies();
+				//context.restore();
+			}
+
+			var timer = setInterval(animate,60);
+
+			var leftBtn = document.getElementById("leftBtn");
+			var rightBtn = document.getElementById("rightBtn");
+			var fire = document.getElementById("fire");
+			leftBtn.addEventListener("mousedown",function(event) {
+				launcher.dir = "left";
+			});
+			leftBtn.addEventListener("mouseup",function(event) {
+				launcher.dir = "";
+			});
+
+			rightBtn.addEventListener("mousedown",function(event) {
+				launcher.dir = "right";
+			});
+			rightBtn.addEventListener("mouseup",function(event) {
+				launcher.dir = "";
+			});
+
+			fire.addEventListener("mousedown",function(event) {
+				launcher.missiles.push({"x":launcher.x + launcher.w *0.5, "y":launcher.y,"w":3,"h":10,"bg":"red"});
+				laserMP3.play();
+			});
+
+
+			// function init(){
+
+   // 				laserMP3 = new Sound("soundeff/laser.mp3");
+   // 				scene.start();
+ 		// 	 }
+			
+
+		}
+
+		window.addEventListener("load",function(event) {
+			initCanvas();
+		});
+
+	</script>
+</head>
+<body>
+	<div id="container">
+	<canvas id="canvas" width="1000px" height="550px"></canvas>
+	</div>
+	<div id="buttons">
+		<button id="leftBtn">&#8592;</button>
+		<button id="fire">Fire</button>
+		<button id="rightBtn">&#8594;</button>
+		
+	</div>
+	<!-- <audio controls>
+  <source src="laser.mp3" type="audio/mp3">
+Your browser does not support the audio element.
+</audio> -->
+	<h3 id="status"></h3>
+	<div id="footer">
+			<div>
+				<div id="two">
+					<img src="images/m1.png"/>
+				</div>
+			</div>
+			<p>&copy;LHDigitals</p>
+		</div>
+</body>
+</html>
